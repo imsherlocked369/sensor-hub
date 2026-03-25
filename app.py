@@ -145,7 +145,7 @@ class Measurement(db.Model):
 class ApiKey(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    key = db.Column(db.String(32), nullable=False, unique=True)
+    key = db.Column(db.String(64), nullable=False, unique=True)
     sensor_id = db.Column(db.Integer, db.ForeignKey("sensor.id"), nullable=True)
     admin =  db.Column(db.Boolean, default=False)
 
@@ -153,7 +153,7 @@ class ApiKey(db.Model):
 
     @staticmethod
     def key_hash(key):
-        return hashlib.sha256(key.encode()).digest()
+        return hashlib.sha256(key.encode()).hexdigest()
 
 
 def require_admin(func):
