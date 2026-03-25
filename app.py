@@ -268,6 +268,9 @@ def page_key(*args, **kwargs):
     page = request.args.get("page", 0)
     return request.path + f"[page_{page}]"
 
+class HealthCheck(Resource):
+    def get(self):
+        return {"status": "ok"}, 200
 
 class MeasurementCollection(Resource):
 
@@ -309,6 +312,14 @@ class MeasurementItem(Resource):
 app.url_map.converters["sensor"] = SensorConverter
 
 api.add_resource(SensorCollection, "/api/sensors/")
+api.add_resource(HealthCheck, "/api/health/")
+
 api.add_resource(SensorItem, "/api/sensors/<sensor:sensor>/")
 api.add_resource(MeasurementCollection, "/api/sensors/<sensor:sensor>/measurements/")
+
+with app.app_context():
+    db.create_all()
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
