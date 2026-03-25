@@ -319,6 +319,16 @@ api.add_resource(MeasurementCollection, "/api/sensors/<sensor:sensor>/measuremen
 
 with app.app_context():
     db.create_all()
+    # Seed admin key if none exists
+    if not ApiKey.query.filter_by(admin=True).first():
+        key = "19FS6S0zdjIaPYkN9UcTy67qfbGkys7pv3SI341IHRE"
+        db_key = ApiKey(
+            key=ApiKey.key_hash(key),
+            admin=True
+        )
+        db.session.add(db_key)
+        db.session.commit()
+        print(f"Admin key seeded: {key}")
 
 if __name__ == "__main__":
     app.run(debug=True)
